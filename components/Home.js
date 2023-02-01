@@ -1,11 +1,10 @@
 import {
-  FlatList,
+  ActivityIndicator,
   Pressable,
-  ScrollView,
   StyleSheet,
-  Text,
   TouchableHighlight,
   View,
+  Text,
 } from 'react-native';
 import Header from './Header';
 import Item from './Item';
@@ -16,40 +15,61 @@ import {useEffect, useState} from 'react';
 import {
   enableNewTaskModal,
   enableUpdateTaskModal,
+  fetchTasks,
   updateTasks,
+  deleteTask,
 } from '../redux/actions';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AddNewTask from './AddNewTask';
 import Update from './Update';
 import UpdateTaskModal from './UpdateTaskModal';
-import {getMyStringValue} from '../redux/api/tokenHandling';
-import {fetchProducts} from '../redux/products/actions';
 
 function Home({navigation}) {
-  const storeState = useSelector(state => state);
-  const tasksState = storeState.task;
-  const tasks = tasksState.tasks;
-  const isNewTaskModalEnable = tasksState.isNewTaskModalEnable;
-  const isUpdateTaskModalEnable = tasksState.isUpdateTaskModalEnable;
-  const StoreStyle = ['color: red', 'font-weight : bold'];
-
+  const {
+    isLoading,
+    tasks,
+    error,
+    isNewTaskModalEnable,
+    isUpdateTaskModalEnable,
+    idToBeUpdate,
+    isMoreLoading,
+    isListEnd,
+  } = useSelector(state => state).task;
+  // const tasks = tasksState.tasks;
+  // const currentPage = tasksState.currentPage;
+  // const isNewTaskModalEnable = tasksState.isNewTaskModalEnable;
+  // const isUpdateTaskModalEnable = tasksState.isUpdateTaskModalEnable;
   const dispatch = useDispatch();
-  // const getToken = async () => {
-  //   return await getMyStringValue();
-  // };
-  let token = getMyStringValue();
+  const [page, setPage] = useState(1);
 
-  const deleteTask = delTask => {
-    const finalTaskList = tasks.filter(task => task.id != delTask.id);
-    dispatch(updateTasks(finalTaskList));
+  const fetchMoreData = () => {
+    if (!isListEnd && !isMoreLoading) {
+      setPage(page + 1);
+    }
+  };
+  const renderFooter = () => {
+    return (
+      <View>
+        {isMoreLoading && <ActivityIndicator />}
+        {isListEnd && <Text>No more todo at the moment</Text>}
+      </View>
+    );
   };
   const handleUpdate = item => {
     dispatch(enableUpdateTaskModal(item.id));
   };
+  const requestApi = () => {
+    dispatch(fetchTasks(page));
+  };
+
+  // useEffect(() => {
+  //   dispatch(fetchTasks(page));
+  // }, []);
+
   useEffect(() => {
-    dispatch(fetchProducts());
-  });
+    requestApi();
+  }, [page]);
 
   return (
     <View style={styles.container}>
@@ -77,7 +97,9 @@ function Home({navigation}) {
               <View style={styles.rowBack}>
                 <Pressable
                   onPress={() => {
-                    deleteTask(data.item);
+                    dispatch(deleteTask(data.item));
+                    setPage(1);
+                    dispatch(fetchTasks(page));
                   }}
                   style={styles.delete}>
                   <View style={styles.deleteText}>
@@ -87,7 +109,6 @@ function Home({navigation}) {
                 <Pressable
                   onPress={() => {
                     handleUpdate(data.item);
-
                     rowMap[data.item.id].closeRow();
                   }}
                   style={styles.update}>
@@ -100,6 +121,8 @@ function Home({navigation}) {
             leftOpenValue={60}
             rightOpenValue={-60}
             keyExtractor={item => item.id}
+            onEndReached={() => fetchMoreData()}
+            ListFooterComponent={renderFooter}
           />
         </View>
       </View>
@@ -114,8 +137,6 @@ function Home({navigation}) {
         style={styles.fabStyle}
         onPress={() => {
           dispatch(enableNewTaskModal());
-
-          // navigation.navigate('AddNewTask');
         }}
       />
     </View>
@@ -124,21 +145,15 @@ function Home({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // padding: 20,
     backgroundColor: 'white',
   },
   header: {
-    // backgroundColor: 'pink',
-    // padding: 20,
     marginTop: 10,
   },
   body: {
     flex: 1,
-
-    // padding: 20,
   },
   taskList: {
-    // flex: 1,
     padding: 20,
     marginBottom: 60,
   },

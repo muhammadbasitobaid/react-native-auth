@@ -6,13 +6,16 @@ import {AUTHENTICATE} from './constant';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {setStringValue} from '../api/tokenHandling';
 import {getMyStringValue} from '../api/tokenHandling';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function* fetchToken({payload}) {
   try {
     const response = yield call(postCredentials, payload);
     const token = response.data.access_token;
+    console.log(`token in saga ----> ${token}`);
+
     yield setStringValue(token);
-    const tokenS = yield getMyStringValue();
+    yield AsyncStorage.setItem('@token', token);
 
     yield put(authenticateSuccess());
   } catch (error) {

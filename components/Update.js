@@ -9,6 +9,7 @@ import {
   addTask,
   disableNewTaskModal,
   disableUpdateTaskModal,
+  fetchTasks,
   updateTasks,
 } from '../redux/actions';
 import {CheckBox} from '@rneui/themed';
@@ -28,11 +29,14 @@ function Update() {
 
   const [isChecked, setIsChecked] = useState(task.isDone);
   const initialValues = {title: task.title};
-  const updateTask = updatedTask => {
-    const targetIndex = tasks.findIndex(item => item.id === task.id);
-    const tempTask = [...tasks];
-    tempTask[targetIndex] = updatedTask;
-    dispatch(updateTasks(tempTask));
+  const updateTask = async updatedTask => {
+    // const targetIndex = tasks.findIndex(item => item.id === task.id);
+    // const tempTask = [...tasks];
+    // tempTask[targetIndex] = updatedTask;
+
+    dispatch(updateTasks(updatedTask));
+
+    dispatch(fetchTasks());
   };
 
   return (
@@ -47,6 +51,7 @@ function Update() {
               title: values.title,
             };
             updateTask(newTask);
+
             dispatch(disableUpdateTaskModal());
           }}
           validationSchema={validationSchema}>

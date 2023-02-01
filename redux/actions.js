@@ -4,9 +4,27 @@ import {
   DISABLE_UPDATE_TASK_MODAL,
   ENABLE_NEW_TASK_MODAL,
   ENABLE_UPDATE_TASK_MODAL,
+  FETCH_TASKS,
+  FETCH_TASKS_FAIL,
+  FETCH_TASKS_SUCCESS,
+  DELETE_TASK,
   UPDATE_TASK,
 } from './constants';
 
+export const fetchTasks = currentPage => ({
+  type: FETCH_TASKS,
+  currentPage,
+});
+
+export const fetchTasksSuccess = tasks => ({
+  type: FETCH_TASKS_SUCCESS,
+  payload: tasks,
+});
+
+export const fetchTasksFail = error => ({
+  type: FETCH_TASKS_FAIL,
+  payload: error,
+});
 export const addTask = task => {
   return {
     type: ADD_TASK,
@@ -17,6 +35,13 @@ export const updateTasks = updatedTasks => {
   return {
     type: UPDATE_TASK,
     payload: updatedTasks,
+  };
+};
+
+export const deleteTask = task => {
+  return {
+    type: DELETE_TASK,
+    payload: task,
   };
 };
 

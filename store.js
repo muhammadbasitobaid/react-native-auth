@@ -20,10 +20,11 @@ const sagaMiddleware = createSagaMiddleware();
 const logger = createLogger();
 const middleware = [sagaMiddleware, logger];
 const store = createStore(
-  persistedReducer,
+  // persistedReducer,
+  rootReducer,
   composeWithDevTools(applyMiddleware(...middleware)),
 );
-export const persistor = persistStore(store);
+// export const persistor = persistStore(store);
 
 sagaMiddleware.run(rootSaga);
 

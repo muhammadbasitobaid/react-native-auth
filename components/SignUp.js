@@ -16,9 +16,9 @@ function SignUp({navigation}) {
     confirmationPassword: '',
   };
   const dispatch = useDispatch();
-  const storeState = useSelector(state => state);
-  const authError = storeState.auth.error;
-  const isAuthenticating = storeState.auth.isAuthenticating;
+  const authState = useSelector(state => state).auth;
+  const authError = authState.error;
+  const isAuthenticating = authState.isAuthenticating;
 
   const validationSchema = yup.object().shape({
     email: yup.string().required('Required').email('enter valid email'),
@@ -120,7 +120,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'Nunito-Light',
-    // fontFamily: 'Nunito-Bold',
     textAlign: 'center',
     fontSize: 24,
     fontWeight: 'bold',

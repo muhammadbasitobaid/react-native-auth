@@ -8,14 +8,13 @@ import * as yup from 'yup';
 import {Dialog} from '@rneui/themed';
 function Login() {
   const dispatch = useDispatch();
-  const storeState = useSelector(state => state);
-  const authError = storeState.auth.error;
-
-  const isAuthenticating = storeState.auth.isAuthenticating;
+  const authState = useSelector(state => state).auth;
+  const authError = authState.error;
+  const isAuthenticating = authState.isAuthenticating;
 
   const initialValues = {
-    email: '',
-    password: '',
+    email: 'admin@email.com',
+    password: 'admin',
   };
   const validationSchema = yup.object().shape({
     email: yup.string().required('Required').email('enter valid email'),
@@ -100,7 +99,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'Nunito-Light',
-    // fontFamily: 'Nunito-Bold',
     textAlign: 'center',
     backgroundColor: 'white',
     fontSize: 24,

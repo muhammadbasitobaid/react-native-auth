@@ -5,7 +5,7 @@ import {Formik, Form, ErrorMessage} from 'formik';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import * as yup from 'yup';
 import {useDispatch, useSelector} from 'react-redux';
-import {addTask, disableNewTaskModal} from '../redux/actions';
+import {addTask, disableNewTaskModal, fetchTasks} from '../redux/actions';
 function AddNewTask({navigation}) {
   let isDone = false;
   const initialValues = {title: ''};
@@ -24,6 +24,7 @@ function AddNewTask({navigation}) {
           onSubmit={values => {
             const newTask = {...values, isDone: false};
             dispatch(addTask(newTask));
+            dispatch(fetchTasks());
             dispatch(disableNewTaskModal());
           }}
           validationSchema={validationSchema}>

@@ -3,7 +3,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {Dimensions, TouchableHighlight} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {updateTasks} from '../redux/actions';
+import {fetchTasks, updateTasks} from '../redux/actions';
 
 function Item({task}) {
   const storeState = useSelector(state => state);
@@ -15,7 +15,8 @@ function Item({task}) {
     const targetIndex = tasks.findIndex(item => item.id === id);
     const tempTask = [...tasks];
     tempTask[targetIndex] = updatedTask;
-    dispatch(updateTasks(tempTask));
+    dispatch(updateTasks(updatedTask));
+    dispatch(fetchTasks());
   };
 
   const setStatus = isChecked => {
